@@ -1,21 +1,25 @@
-clear all
+clear
 close all
 
 echo on
-%path(path,'c:\Cursos\RedesNeurais\Exemplos MATLAB\VENT')
-load VentAssistida.mat % Carrega arquivo com exemplos de treinamento e teste
+load ventilation
 pause % Strike any key to continue...
 
 % Transforma as saidas categóricas em numéricas
 echo off
-for i=1:size(VentTreinDados,2)
+treinSize = size(VentTreinDados,2);
+SaidaTrein = zeros(2, treinSize);
+for i=1:treinSize
     if strcmp(VentTreinSaida{1,i},'sucesso')
         SaidaTrein(1,i)=1;
     else
         SaidaTrein(2,i)=1;
     end
 end
-for i=1:size(VentTestDados,2)
+
+testSize = size(VentTestDados,2);
+SaidaTest = zeros(2, testSize);
+for i=1:testSize
     if strcmp(VentTestSaida{1,i},'sucesso')
         SaidaTest(1,i)=1;
     else
@@ -25,17 +29,17 @@ end
 echo on
 pause % Strike any key to continue...
 
-%Normalize os atributos de entrada do conjunto de treinamento...
+% Normalize os atributos de entrada do conjunto de treinamento...
 [VentTreinDados_N,PS]=mapminmax(VentTreinDados);
 
-%Normalize os atributos de entrada do conjunto de teste.
+% Normalize os atributos de entrada do conjunto de teste.
 VentTestDados_N=mapminmax('apply',VentTestDados,PS);
 pause % Strike any key to continue...
 
-%visualize os dados do seu problema.
+% Visualize os dados do seu problema.
 echo off
 grid on; hold on;
-for i=1:size(VentTreinDados_N,2)
+for i=1:treinSize
 	if SaidaTrein(1,i)==1;
 		plot3(VentTreinDados_N(1,i),VentTreinDados_N(2,i),...
             VentTreinDados_N(3,i),'k*');
